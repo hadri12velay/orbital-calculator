@@ -31,6 +31,11 @@ export const circularHohmann = ({ mu, r_1, r_2 }) => {
         Delta_1,
         Delta_2,
         Delta_Total,
+        V_start,
+        V_end,
+        ang_momentum_transfer,
+        V_transfer_1,
+        V_transfer_2,
     };
 };
 

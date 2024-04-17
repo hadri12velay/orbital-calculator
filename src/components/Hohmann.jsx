@@ -33,6 +33,7 @@ export default function Hohmann() {
                     &mu;:
                     <input
                         type="text"
+                        defaultValue={defaultMu}
                         placeholder={defaultMu}
                         onChange={(e) => setMu(Number(e.target.value))}
                     />
@@ -42,6 +43,7 @@ export default function Hohmann() {
                     Radius 1:
                     <input
                         type="text"
+                        defaultValue={defaultR1}
                         placeholder={defaultR1}
                         onChange={(e) => setR1(Number(e.target.value))}
                     />
@@ -51,6 +53,7 @@ export default function Hohmann() {
                     Radius 2:
                     <input
                         type="text"
+                        defaultValue={defaultR2}
                         placeholder={defaultR2}
                         onChange={(e) => setR2(Number(e.target.value))}
                     />
