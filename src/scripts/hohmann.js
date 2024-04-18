@@ -27,19 +27,23 @@ export const circularHohmann = ({ mu, r_1, r_2 }) => {
     const Delta_1 = V_transfer_1 - V_start;
     const Delta_2 = V_end - V_transfer_2;
     const Delta_Total = Math.abs(Delta_1) + Math.abs(Delta_2);
+    const ang_momentum_start = get_ang_momentum_h({ mu, r: r_1 });
+    const ang_momentum_end = get_ang_momentum_h({ mu, r: r_2 });
     return {
         Delta_1,
         Delta_2,
         Delta_Total,
         V_start,
         V_end,
+        ang_momentum_start,
         ang_momentum_transfer,
+        ang_momentum_end,
         V_transfer_1,
         V_transfer_2,
     };
 };
 
-const get_ang_momentum_h = ({ mu, r, r_a, r_p }) => {
+export const get_ang_momentum_h = ({ mu, r, r_a, r_p }) => {
     if (r && !r_a && !r_p) r_p = r_a = r;
     const h = Math.sqrt((2 * mu * (r_a * r_p)) / (r_a + r_p));
     return h;
