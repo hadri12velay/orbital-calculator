@@ -45,11 +45,6 @@ const get_ang_momentum_h = ({ mu, r, r_a, r_p }) => {
     return h;
 };
 
-const get_semi_major_a = ({ r_a, r_p }) => {
-    if (r) r_p = r_a = r;
-    return (r_a + r_p) / 2;
-};
-
 const get_orbital_velocity = ({ mu, r, h }) => {
     // for circular orbits, need mu and r only
     if (!h && mu) h = get_ang_momentum_h({ mu, r });

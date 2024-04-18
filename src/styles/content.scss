@@ -1,8 +1,70 @@
 #Content {
-    #Hohmann {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    min-height: 100vh;
+    .calculate-box {
+        margin: 2rem;
+        margin: calc($header-height + 2rem) 2rem 2rem 2rem;
+        max-width: 400px;
+        border: 1px solid $text-color;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 2rem;
         .input {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: minmax(0, 50%) minmax(0, 50%);
+            row-gap: 1rem;
+            column-gap: 2rem;
+            button.calculate,
+            .span-2 {
+                grid-column: span 2;
+            }
+            input {
+                width: 100%;
+            }
+        }
+    }
+    #Visual {
+        height: calc(100vh - $header-height);
+        border: 1px solid $text-color;
+        position: sticky;
+        top: $header-height;
+        width: 100%;
+        .container {
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            .orbit {
+                position: absolute;
+                border: 2px dotted $text-color;
+                border-style: dashed;
+                border-radius: 100%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                &.inside {
+                    width: 200px;
+                    height: 200px;
+                }
+                &.outside {
+                    width: 500px;
+                    height: 500px;
+                }
+                &.transfer {
+                    width: 350px;
+                    height: 350px;
+                    transform: translate(-50%, -50%) translateX(21.5%);
+                    border-color: yellow;
+                }
+                &.mass {
+                    width: 20px;
+                    height: 20px;
+                    border: none;
+                    background: $text-color;
+                }
+            }
         }
     }
 }

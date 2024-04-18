@@ -1,4 +1,11 @@
+$header-height: 30px;
 #Nav {
-    position: sticky;
-    background-color: grey;
+    position: fixed;
+    top: 0;
+    background-color: $header-color;
+    height: $header-height;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

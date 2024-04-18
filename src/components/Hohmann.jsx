@@ -13,6 +13,7 @@ export default function Hohmann() {
     const [output, setOutput] = useState({});
 
     const handleCalculate = () => {
+        console.log('Circular Hohmann Transfer');
         const result = circularHohmann({
             mu: mu,
             r_1: R1,
@@ -21,50 +22,52 @@ export default function Hohmann() {
         setOutput(result);
     };
 
+    const round = (number, decimal) => {
+        return Math.round(number * 10 ** decimal) / 10 ** decimal;
+    };
+
     useEffect(() => {
         handleCalculate();
     }, []);
 
     return (
-        <div id="Hohmann">
+        <div id="Hohmann" className="calculate-box">
             <h3>Circular Hohmann Transfer</h3>
             <div className="input">
                 <label>
-                    &mu;:
-                    <input
-                        type="text"
-                        defaultValue={defaultMu}
-                        placeholder={defaultMu}
-                        onChange={(e) => setMu(Number(e.target.value))}
-                    />
-                    km^(3)&#x2022;s^(-2)
+                    &mu; (km<sup>3</sup>s<sup>-2</sup>):
                 </label>
-                <label>
-                    Radius 1:
-                    <input
-                        type="text"
-                        defaultValue={defaultR1}
-                        placeholder={defaultR1}
-                        onChange={(e) => setR1(Number(e.target.value))}
-                    />
-                    km
-                </label>
-                <label>
-                    Radius 2:
-                    <input
-                        type="text"
-                        defaultValue={defaultR2}
-                        placeholder={defaultR2}
-                        onChange={(e) => setR2(Number(e.target.value))}
-                    />
-                    km
-                </label>
-                <button onClick={handleCalculate}>Calculate</button>
+                <input
+                    type="text"
+                    defaultValue={defaultMu}
+                    placeholder={defaultMu}
+                    onChange={(e) => setMu(Number(e.target.value))}
+                />
+
+                <label>Radius 1 (km):</label>
+                <input
+                    type="text"
+                    defaultValue={defaultR1}
+                    placeholder={defaultR1}
+                    onChange={(e) => setR1(Number(e.target.value))}
+                />
+
+                <label>Radius 2 (km):</label>
+                <input
+                    type="text"
+                    defaultValue={defaultR2}
+                    placeholder={defaultR2}
+                    onChange={(e) => setR2(Number(e.target.value))}
+                />
+
+                <button className="calculate" onClick={handleCalculate}>
+                    Calculate
+                </button>
             </div>
             <div className="output">
-                <p>&Delta;V1-&gt; {output.Delta_1} km/s</p>
-                <p>&Delta;V2-&gt; {output.Delta_2} km/s</p>
-                <p>&Delta;V Total-&gt; {output.Delta_Total} km/s</p>
+                <p>&Delta;V1-&gt; {round(output.Delta_1, 4)} km/s</p>
+                <p>&Delta;V2-&gt; {round(output.Delta_2, 4)} km/s</p>
+                <p>&Delta;V Total-&gt; {round(output.Delta_Total, 4)} km/s</p>
             </div>
         </div>
     );
