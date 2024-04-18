@@ -29,9 +29,25 @@ export default function Visual({ orbits }) {
     return (
         <div id="Visual" ref={visualRef}>
             <div className="container">
+                <div className="legend">
+                    {orbits.map((orbit, key) => {
+                        return (
+                            <div
+                                key={key}
+                                className={`orbit-legend color${key}`}
+                            >
+                                {orbit.title}
+                            </div>
+                        );
+                    })}
+                </div>
                 {orbits.map((orbit, key) => {
                     return (
-                        <div className="orbit" orbit-id={key} key={key}></div>
+                        <div
+                            className={`orbit color${key}`}
+                            orbit-id={key}
+                            key={key}
+                        ></div>
                     );
                 })}
             </div>

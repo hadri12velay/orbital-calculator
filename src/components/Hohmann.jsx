@@ -6,7 +6,7 @@ import { get_kepler_elliptic } from '../scripts/orbit';
 export default function Hohmann({ orbits, setOrbits }) {
     const earthMu = 398600;
     const defaultMu = earthMu;
-    const defaultR1 = 6700;
+    const defaultR1 = 15000;
     const defaultR2 = 42164;
     const [mu, setMu] = useState(defaultMu);
     const [R1, setR1] = useState(defaultR1);
@@ -25,18 +25,26 @@ export default function Hohmann({ orbits, setOrbits }) {
 
         const earth = {
             mass: true,
+            type: 'earth',
             a: 6371,
             b: 6371,
             c: 0,
         };
         const orbits_obj = [
-            earth,
-            get_kepler_elliptic({ mu: mu, r: R1 }),
+            {
+                ...get_kepler_elliptic({ mu: mu, r: R1 }),
+                title: 'Starting orbit',
+            },
             {
                 ...get_kepler_elliptic({ mu: mu, r_1: R1, r_2: R2 }),
+                title: 'Transfer orbit',
                 type: 'transfer',
             },
-            get_kepler_elliptic({ mu: mu, r: R2 }),
+            {
+                ...get_kepler_elliptic({ mu: mu, r: R2 }),
+                title: 'Final orbit',
+            },
+            earth,
         ];
         setOrbits(orbits_obj);
     };

@@ -28,11 +28,11 @@
         }
     }
     #Visual {
-        height: calc(100vh - $header-height);
-        height: calc(100dvh - $header-height);
-        border: 1px solid $text-color;
+        $margin: 40px;
+        height: calc(100vh - $header-height - 2 * $margin);
+        height: calc(100dvh - $header-height - 2 * $margin);
         position: sticky;
-        top: $header-height;
+        top: calc($header-height + $margin);
         width: 100%;
         .container {
             height: 100%;
@@ -40,19 +40,54 @@
             overflow: hidden;
             .orbit {
                 position: absolute;
-                border: 2px solid $text-color;
+                border: 3px solid $text-color;
                 border-style: dashed;
                 border-radius: 100%;
                 top: 50%;
                 left: 50%;
+                z-index: 2;
                 &.transfer {
-                    transform: translate(-50%, -50%) translateX(21.5%);
-                    border-color: yellow;
+                    z-index: 1;
+                    // Bottom half of image
+                    // clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0% 100%);
+                    // Top half of image
+                    clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
                 }
                 &.mass {
                     border: none;
-                    background: $text-color;
+                    background: rgba(255, 255, 255, 0.3);
                 }
+                &.earth {
+                    background: url(../images/world.png);
+                    background-position: center;
+                    background-size: cover;
+                }
+            }
+            .legend {
+                position: absolute;
+                top: 0;
+                right: $margin;
+                .orbit-legend {
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    font-size: $font-size-smallish;
+                    // font-size: $font-size-largish;
+                }
+            }
+            .color0 {
+                $color: rgb(71, 175, 71);
+                color: $color;
+                border-color: $color;
+            }
+            .color1 {
+                $color: rgb(240, 240, 118);
+                color: $color;
+                border-color: $color;
+            }
+            .color2 {
+                $color: rgb(255, 79, 79);
+                color: $color;
+                border-color: $color;
             }
         }
     }
