@@ -8,7 +8,7 @@ export default function Content() {
 
     return (
         <div id="Content">
-            <Hohmann orbits={orbits} setOrbits={setOrbits} />
+            <Hohmann setOrbits={setOrbits} />
             <Visual orbits={orbits} />
         </div>
     );

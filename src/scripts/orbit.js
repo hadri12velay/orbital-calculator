@@ -1,53 +1,97 @@
-export const get_kepler_elliptic = ({ mu, r, r_1, r_2 }) => {
-    // only for 0 < e <= 1
-    if (r) r_1 = r_2 = r;
-    const r_a = Math.max(r_1, r_2);
-    const r_p = Math.min(r_1, r_2);
-    const a = (r_a + r_p) / 2; // semi-major axis
-    const e = (r_a - r_p) / (r_a + r_p); // eccentricity
-    const tau = 2 * Math.PI * Math.sqrt(a ** 3 / mu); // orbital period
-    const n = Math.sqrt(mu / a ** 3); // mean motion
-    const h = get_ang_momentum_h({ mu, r_a, r_p });
-    const c = e * a;
-    const b = Math.sqrt(r_a * r_p); // semi-minor axis
-    const elements = {
-        h,
-        mu,
-        r_a,
-        r_p,
-        a,
-        e,
-        tau,
-        n,
-        c,
-        b,
-    };
-    return elements;
-};
+export class Orbit {
+    constructor({ mu, r_a, r_p, r, a, b, e, h, p, THETA, OMEGA }) {
+        this.mu = mu; // Standard Gravitational Parameter (km^3s^-2)
+        this.r = r ?? this.r; // Radius at true anomaly
+        this.r_a = r_a ?? this.r_a; // Apogee Radius (Far)
+        this.r_p = r_p ?? this.r_p; // Perigee Radius (Close)
+        this.e = e ?? this.e; // Eccentricity
+        this.h = h ?? this.h; // Angular momentum
+        this.a = a ?? this.a; // Semi-major Axis
+        this.b = b ?? this.b; // Semi-minor Axis
+        this.p = p ?? this.p; // Semi-latus Rectum
+        this.THETA = THETA ? this.THETA : 0; // True Anomaly (RAD, from Perigee)
+        this.OMEGA = OMEGA ? this.OMEGA : 0; // Ascending node (RAD)
 
-export const get_ang_momentum_h = ({ mu, r, r_a, r_p }) => {
-    if (r && !r_a && !r_p) r_p = r_a = r;
-    const h = Math.sqrt((2 * mu * (r_a * r_p)) / (r_a + r_p));
-    return h;
-};
-
-export const changeOrbitStyle = ({ orbit, element, fit_ratio }) => {
-    const zoom = fit_ratio;
-    if (!orbit.omega) orbit.omega = 0;
-    const width = orbit.a * 2 * zoom;
-    const height = orbit.b * 2 * zoom;
-    const translate = orbit.c * zoom;
-
-    element.style['width'] = `${width}px`;
-    element.style['height'] = `${height}px`;
-    element.style[
-        'transform'
-    ] = `translate(-50%, -50%) translateX(${translate}px)`;
-
-    if (orbit.mass) {
-        element.classList.add('mass');
+        this.setup();
     }
-    if (orbit.type) {
-        element.classList.add(orbit.type);
+    setup() {
+        this.is_circular = this.isCircular();
+
+        if (!this.h) this.h = this.getAngularMomentum(); // req: mu, r_a, r_p
+        if (!this.a) this.a = this.getSemiMajor(); // req: r_a, r_p
+        if (!this.p) this.p = this.getSemiLatus(); // req: mu, h
+        if (!this.r) this.r = this.getRadius(); // req: p, q, THETA
+        if (!this.e) this.e = this.getEccentricity(); // req: p, q, THETA
+
+        this.c = this.e * this.a; // can't remember the name rn
+        if (!this.b) this.b = Math.sqrt(this.r_a * this.r_p);
     }
-};
+    isCircular() {
+        if (this.e === 0 || (this.r_a === this.r_p && this.r_a !== undefined)) {
+            if (!this.r_a) this.r_a = this.r_p;
+            if (!this.r_p) this.r_p = this.r_a;
+            this.r = this.r_a;
+            return true;
+        }
+        return false;
+    }
+    getVelocityTan(r) {
+        // Tangential Velocity V
+        const V_T = this.h / r;
+        return V_T;
+    }
+    getAngularMomentum() {
+        // Angular Momentum h
+        const h = Math.sqrt(
+            (2 * this.mu * (this.r_a * this.r_p)) / (this.r_a + this.r_p)
+        );
+        return h;
+    }
+    getRadius() {
+        const r = this.p / (1 + this.e * Math.cos(this.THETA));
+        return r;
+    }
+    getSemiMajor() {
+        // Semi-major Axis
+        const a = (this.r_a + this.r_p) / 2;
+        return a;
+    }
+    getSemiLatus() {
+        // Semi-latus Rectum
+        const p = this.h ** 2 / this.mu;
+        return p;
+    }
+    getEccentricity() {
+        const e = (this.r_a - this.r_p) / (this.r_a + this.r_p);
+        return e;
+    }
+}
+
+export class Transfer extends Orbit {
+    constructor(orbit1, orbit2) {
+        super({ mu: orbit1.mu });
+        this.start_orbit = orbit1;
+        this.final_orbit = orbit2;
+    }
+    circularHohmann() {
+        const r1 = this.start_orbit.r;
+        const r2 = this.final_orbit.r;
+        // set ascending node to the other side when travelling from big to small orbit
+        this.OMEGA = r1 < r2 ? 0 : Math.PI;
+        this.r_p = Math.min(r1, r2);
+        this.r_a = Math.max(r1, r2);
+
+        this.setup();
+
+        // Velocities at the start and end of transfer
+        this.V_transfer_1 = this.getVelocityTan(r1);
+        this.V_transfer_2 = this.getVelocityTan(r2);
+        // Delta Vs
+        this.DELTA_V_1 =
+            this.V_transfer_1 - this.start_orbit.getVelocityTan(r1);
+        this.DELTA_V_2 =
+            this.final_orbit.getVelocityTan(r2) - this.V_transfer_2;
+        this.DELTA_V_total =
+            Math.abs(this.DELTA_V_1) + Math.abs(this.DELTA_V_2);
+    }
+}

@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { circularHohmann, get_ang_momentum_h } from '../scripts/hohmann';
-import { get_kepler_elliptic } from '../scripts/orbit';
+import { Orbit, Transfer } from '../scripts/orbit';
 
-export default function Hohmann({ orbits, setOrbits }) {
+export default function Hohmann({ setOrbits }) {
     const earthMu = 398600;
     const defaultMu = earthMu;
     const defaultR1 = 15000;
@@ -16,35 +15,36 @@ export default function Hohmann({ orbits, setOrbits }) {
 
     const handleCalculate = () => {
         console.log('Circular Hohmann Transfer');
-        const result = circularHohmann({
-            mu: mu,
-            r_1: R1,
-            r_2: R2,
-        });
-        setOutput(result);
+        const orbit1 = new Orbit({ mu: mu, r_a: R1, e: 0 });
+        const orbit2 = new Orbit({ mu: mu, r_a: R2, e: 0 });
+        const orbit_transfer = new Transfer(orbit1, orbit2);
+        orbit_transfer.circularHohmann();
 
-        const earth = {
+        setOutput(orbit_transfer);
+
+        const center = {
             mass: true,
-            type: 'earth',
+            type: isEarth ? 'earth' : 'planet',
             a: 6371,
             b: 6371,
             c: 0,
+            OMEGA: 0,
         };
         const orbits_obj = [
             {
-                ...get_kepler_elliptic({ mu: mu, r: R1 }),
+                ...orbit1,
                 title: 'Starting orbit',
             },
             {
-                ...get_kepler_elliptic({ mu: mu, r_1: R1, r_2: R2 }),
+                ...orbit_transfer,
                 title: 'Transfer orbit',
                 type: 'transfer',
             },
             {
-                ...get_kepler_elliptic({ mu: mu, r: R2 }),
+                ...orbit2,
                 title: 'Final orbit',
             },
-            earth,
+            center,
         ];
         setOrbits(orbits_obj);
     };
@@ -105,9 +105,9 @@ export default function Hohmann({ orbits, setOrbits }) {
                 </button>
             </div>
             <div className="output">
-                <p>&Delta;V1-&gt; {round(output.Delta_1, 4)} km/s</p>
-                <p>&Delta;V2-&gt; {round(output.Delta_2, 4)} km/s</p>
-                <p>&Delta;V Total-&gt; {round(output.Delta_Total, 4)} km/s</p>
+                <p>&Delta;V1-&gt; {round(output.DELTA_V_1, 4)} km/s</p>
+                <p>&Delta;V2-&gt; {round(output.DELTA_V_2, 4)} km/s</p>
+                <p>&Delta;V Total-&gt; {round(output.DELTA_V_total, 4)} km/s</p>
             </div>
         </div>
     );
