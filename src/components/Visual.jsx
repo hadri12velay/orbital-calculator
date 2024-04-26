@@ -3,9 +3,10 @@ import React, { useEffect, useRef } from 'react';
 const changeOrbitStyle = ({ orbit, element, zoom }) => {
     const width = orbit.a * 2 * zoom;
     const height = orbit.b * 2 * zoom;
-    const translateX = orbit.c * Math.cos(orbit.OMEGA) * zoom;
-    const translateY = orbit.c * Math.sin(orbit.OMEGA) * zoom * -1;
-    const rotation = orbit.OMEGA;
+    const rotation = orbit.omega + orbit.OMEGA;
+    const translateY = orbit.c * Math.sin(rotation) * zoom * -1;
+    let translateX = orbit.c * Math.cos(rotation) * zoom;
+    if (orbit.flipped) translateX = -translateX;
 
     element.style['width'] = `${width}px`;
     element.style['height'] = `${height}px`;

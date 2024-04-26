@@ -1,5 +1,5 @@
 export class Orbit {
-    constructor({ mu, r_a, r_p, r, a, b, e, h, p, THETA, OMEGA }) {
+    constructor({ mu, r_a, r_p, r, a, b, e, h, p, THETA, OMEGA, omega }) {
         this.mu = mu; // Standard Gravitational Parameter (km^3s^-2)
         this.r = r ?? this.r; // Radius at true anomaly
         this.r_a = r_a ?? this.r_a; // Apogee Radius (Far)
@@ -10,7 +10,8 @@ export class Orbit {
         this.b = b ?? this.b; // Semi-minor Axis
         this.p = p ?? this.p; // Semi-latus Rectum
         this.THETA = THETA ? this.THETA : 0; // True Anomaly (RAD, from Perigee)
-        this.OMEGA = OMEGA ? this.OMEGA : 0; // Ascending node (RAD)
+        this.OMEGA = OMEGA ? this.OMEGA : 0; // Longitude of Ascending node (RAD, from right horizontal)
+        this.omega = omega ? this.omega : 0; // Argument of periapsis (RAD)
 
         this.setup();
     }
@@ -73,13 +74,15 @@ export class Transfer extends Orbit {
         this.start_orbit = orbit1;
         this.final_orbit = orbit2;
     }
+
     circularHohmann() {
         const r1 = this.start_orbit.r;
         const r2 = this.final_orbit.r;
-        // set ascending node to the other side when travelling from big to small orbit
-        this.OMEGA = r1 < r2 ? 0 : Math.PI;
+
         this.r_p = Math.min(r1, r2);
         this.r_a = Math.max(r1, r2);
+
+        if (this.r_p === r2) this.flipped = true;
 
         this.setup();
 

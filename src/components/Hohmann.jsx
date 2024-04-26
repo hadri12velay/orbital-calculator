@@ -29,6 +29,7 @@ export default function Hohmann({ setOrbits }) {
             b: 6371,
             c: 0,
             OMEGA: 0,
+            omega: 0,
         };
         const orbits_obj = [
             {
