@@ -3,16 +3,16 @@ import React, { useEffect, useRef } from 'react';
 const changeOrbitStyle = ({ orbit, element, zoom }) => {
     const width = orbit.a * 2 * zoom;
     const height = orbit.b * 2 * zoom;
-    const rotation = orbit.omega + orbit.OMEGA;
+    const rotation = (orbit.omega + orbit.OMEGA) * -1;
     const translateY = orbit.c * Math.sin(rotation) * zoom * -1;
-    let translateX = orbit.c * Math.cos(rotation) * zoom;
+    let translateX = orbit.c * Math.cos(rotation) * zoom * -1;
     if (orbit.flipped) translateX = -translateX;
 
     element.style['width'] = `${width}px`;
     element.style['height'] = `${height}px`;
     element.style[
         'transform'
-    ] = `translate(-50%, -50%) translateX(${translateX}px)  translateY(${translateY}px) rotate(${-rotation}rad)`;
+    ] = `translate(-50%, -50%) translateY(${translateY}px) translateX(${translateX}px) rotate(${rotation}rad)`;
 };
 
 export default function Visual({ orbits }) {
@@ -20,7 +20,7 @@ export default function Visual({ orbits }) {
 
     const displayOrbits = () => {
         const highest_a = orbits.reduce(
-            (max, orbit) => Math.max(max, orbit.a),
+            (max, orbit) => Math.max(max, orbit.a + orbit.c),
             0
         );
         const el_width = visualRef.current.clientWidth;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import Hohmann from './Hohmann';
+import SwitchCalc from './SwitchCalc';
 import Visual from './Visual';
 
 export default function Content() {
@@ -8,7 +9,8 @@ export default function Content() {
 
     return (
         <div id="Content">
-            <Hohmann setOrbits={setOrbits} />
+            {/* <Hohmann setOrbits={setOrbits} /> */}
+            <SwitchCalc setOrbits={setOrbits} />
             <Visual orbits={orbits} />
         </div>
     );

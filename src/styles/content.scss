@@ -4,26 +4,59 @@
     position: relative;
     min-height: 100vh;
     min-height: 100dvh;
-    .calculate-box {
+    #SwitchCalc {
         margin: 2rem;
         margin: calc($header-height + 2rem) 2rem 2rem 2rem;
         max-width: 400px;
-        border: 1px solid $text-color;
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        padding: 2rem;
-        .input {
-            display: grid;
-            grid-template-columns: minmax(0, 50%) minmax(0, 50%);
-            row-gap: 1rem;
-            column-gap: 2rem;
-            button.calculate,
-            .span-2 {
-                grid-column: span 2;
+        min-width: 400px;
+        .tabs {
+            display: flex;
+            gap: 4px;
+            .tab {
+                border: 1px solid $text-color;
+                border-width: 1px 1px 0px 1px;
+                padding: 0 5px;
+                position: relative;
+                &.selected {
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        bottom: -1px;
+                        width: 100%;
+                        height: 1px;
+                        background-color: $background-color;
+                    }
+                }
+                &:hover {
+                    cursor: pointer;
+                }
             }
-            input {
-                width: 100%;
+        }
+        .selected-tab {
+            .hidden {
+                display: none;
+            }
+        }
+
+        .calculate-box {
+            border: 1px solid $text-color;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            .input {
+                display: grid;
+                grid-template-columns: minmax(0, 50%) minmax(0, 50%);
+                row-gap: 1rem;
+                column-gap: 2rem;
+                button.calculate,
+                .span-2 {
+                    grid-column: span 2;
+                }
+                input {
+                    width: 100%;
+                }
             }
         }
     }
@@ -37,7 +70,7 @@
         .container {
             height: 100%;
             position: relative;
-            overflow: hidden;
+            overflow: clip;
             .orbit {
                 position: absolute;
                 border: 3px solid $text-color;

@@ -2,25 +2,23 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import { Orbit, Transfer } from '../scripts/orbit';
 
-export default function Hohmann({ setOrbits }) {
+export default function OrbitCreator({ setOrbits }) {
     const earthMu = 398600;
     const defaultMu = earthMu;
-    const defaultR1 = 15000;
-    const defaultR2 = 42164;
-    const [mu, setMu] = useState(defaultMu);
-    const [R1, setR1] = useState(defaultR1);
-    const [R2, setR2] = useState(defaultR2);
-    const [output, setOutput] = useState({});
+    const defaultR_p = 10000;
+    // const defaultR_a = 100000;
+    const defaultE = 0.7;
+    const defaultOmega = 0;
     const [isEarth, setIsEarth] = useState(true);
+    const [mu, setMu] = useState(defaultMu);
+    // const [r_a, setR_a] = useState(defaultR_a);
+    const [r_p, setR_p] = useState(defaultR_p);
+    const [e, setE] = useState(defaultE);
+    const [omega, setOmega] = useState(defaultOmega);
 
     const handleCalculate = () => {
-        console.log('Circular Hohmann Transfer');
-        const orbit1 = new Orbit({ mu: mu, r_a: R1, e: 0 });
-        const orbit2 = new Orbit({ mu: mu, r_a: R2, e: 0 });
-        const orbit_transfer = new Transfer(orbit1, orbit2);
-        orbit_transfer.circularHohmann();
-
-        setOutput(orbit_transfer);
+        console.log('Orbit Creator');
+        const orbit = new Orbit({ mu, r_p, e, omega });
 
         const center = {
             mass: true,
@@ -33,17 +31,8 @@ export default function Hohmann({ setOrbits }) {
         };
         const orbits_obj = [
             {
-                ...orbit1,
-                title: 'Starting orbit',
-            },
-            {
-                ...orbit_transfer,
-                title: 'Transfer orbit',
-                type: 'transfer',
-            },
-            {
-                ...orbit2,
-                title: 'Final orbit',
+                ...orbit,
+                title: 'Orbit 1',
             },
             center,
         ];
@@ -59,8 +48,8 @@ export default function Hohmann({ setOrbits }) {
     }, []);
 
     return (
-        <div id="Hohmann" className="calculate-box">
-            <h3>Circular Hohmann Transfer</h3>
+        <div id="OrbitCreator" className="calculate-box">
+            <h3>Orbit Creator</h3>
             <div className="input">
                 <label>Earth</label>
                 <input
@@ -85,31 +74,46 @@ export default function Hohmann({ setOrbits }) {
                         />
                     </>
                 )}
-                <label>Radius 1 (km):</label>
+                <label>Perigee (km):</label>
                 <input
                     type="text"
-                    defaultValue={defaultR1}
-                    placeholder={defaultR1}
-                    onChange={(e) => setR1(Number(e.target.value))}
+                    defaultValue={defaultR_p}
+                    placeholder={defaultR_p}
+                    onChange={(e) => setR_p(Number(e.target.value))}
                 />
 
-                <label>Radius 2 (km):</label>
+                {/* <label>Apogee (km):</label>
                 <input
                     type="text"
-                    defaultValue={defaultR2}
-                    placeholder={defaultR2}
-                    onChange={(e) => setR2(Number(e.target.value))}
+                    defaultValue={defaultR_a}
+                    placeholder={defaultR_a}
+                    onChange={(e) => setR_a(Number(e.target.value))}
+                /> */}
+
+                <label>Eccentricity:</label>
+                <input
+                    type="text"
+                    defaultValue={defaultE}
+                    placeholder={defaultE}
+                    onChange={(e) => setE(Number(e.target.value))}
+                />
+                <label>Periapsis Arg (deg):</label>
+                <input
+                    type="text"
+                    defaultValue={defaultOmega}
+                    placeholder={defaultOmega}
+                    onChange={(e) => {
+                        setOmega((Number(e.target.value) * Math.PI) / 180);
+                    }}
                 />
 
                 <button className="calculate" onClick={handleCalculate}>
                     Calculate
                 </button>
             </div>
-            <div className="output">
+            {/* <div className="output">
                 <p>&Delta;V1-&gt; {round(output.DELTA_V_1, 4)} km/s</p>
-                <p>&Delta;V2-&gt; {round(output.DELTA_V_2, 4)} km/s</p>
-                <p>&Delta;V Total-&gt; {round(output.DELTA_V_total, 4)} km/s</p>
-            </div>
+            </div> */}
         </div>
     );
 }

@@ -9,14 +9,16 @@ export class Orbit {
         this.a = a ?? this.a; // Semi-major Axis
         this.b = b ?? this.b; // Semi-minor Axis
         this.p = p ?? this.p; // Semi-latus Rectum
-        this.THETA = THETA ? this.THETA : 0; // True Anomaly (RAD, from Perigee)
-        this.OMEGA = OMEGA ? this.OMEGA : 0; // Longitude of Ascending node (RAD, from right horizontal)
-        this.omega = omega ? this.omega : 0; // Argument of periapsis (RAD)
+        this.THETA = THETA ? THETA : 0; // True Anomaly (RAD, from Perigee)
+        this.OMEGA = OMEGA ? OMEGA : 0; // Longitude of Ascending node (RAD, from right horizontal)
+        this.omega = omega ? omega : 0; // Argument of periapsis (RAD)
 
         this.setup();
     }
     setup() {
         this.is_circular = this.isCircular();
+
+        if (this.e) [this.r_a, this.r_p] = this.getRadii();
 
         if (!this.h) this.h = this.getAngularMomentum(); // req: mu, r_a, r_p
         if (!this.a) this.a = this.getSemiMajor(); // req: r_a, r_p
@@ -35,6 +37,20 @@ export class Orbit {
             return true;
         }
         return false;
+    }
+    getRadii() {
+        let r_a, r_p;
+
+        if (this.r_a && !this.r_p) {
+            r_p = (this.r_a * (1 - this.e)) / (1 + this.e);
+            r_a = this.r_a;
+        }
+        if (this.r_p && !this.r_a) {
+            r_a = (this.r_p * (1 + this.e)) / (1 - this.e);
+            r_p = this.r_p;
+        }
+
+        return [r_a, r_p];
     }
     getVelocityTan(r) {
         // Tangential Velocity V
