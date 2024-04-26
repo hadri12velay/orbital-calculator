@@ -82,7 +82,10 @@ export class Transfer extends Orbit {
         this.r_p = Math.min(r1, r2);
         this.r_a = Math.max(r1, r2);
 
-        if (this.r_p === r2) this.flipped = true;
+        if (this.r_p === r2) {
+            this.flipped = true;
+            this.omega = Math.PI;
+        }
 
         this.setup();
 
