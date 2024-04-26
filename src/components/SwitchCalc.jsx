@@ -6,14 +6,14 @@ import OrbitCreator from './OrbitCreator';
 export default function SwitchCalc({ setOrbits }) {
     const tab_options = [
         {
-            tab_title: 'Orbit',
-            component: <OrbitCreator setOrbits={setOrbits} />,
-            name: 'orbit',
-        },
-        {
             tab_title: 'Hohmann',
             component: <Hohmann setOrbits={setOrbits} />,
             name: 'hohmann',
+        },
+        {
+            tab_title: 'Orbit',
+            component: <OrbitCreator setOrbits={setOrbits} />,
+            name: 'orbit',
         },
     ];
     const [selected, setSelected] = useState(tab_options[0].name);
