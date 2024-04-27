@@ -15,10 +15,13 @@ export default function OrbitCreator({ setOrbits }) {
     const [r_p, setR_p] = useState(defaultR_p);
     const [e, setE] = useState(defaultE);
     const [omega, setOmega] = useState(defaultOmega);
+    const [output, setOutput] = useState({});
 
     const handleCalculate = () => {
         console.log('Orbit Creator');
         const orbit = new Orbit({ mu, r_p, e, omega });
+
+        setOutput(orbit);
 
         const center = {
             mass: true,
@@ -111,9 +114,13 @@ export default function OrbitCreator({ setOrbits }) {
                     Calculate
                 </button>
             </div>
-            {/* <div className="output">
-                <p>&Delta;V1-&gt; {round(output.DELTA_V_1, 4)} km/s</p>
-            </div> */}
+            <div className="output">
+                <p>Apogee: {round(output.r_a, 4)} km</p>
+                <p>Semi-major Axis: {round(output.a, 4)} km</p>
+                <p>Semi-minor Axis: {round(output.b, 4)} km</p>
+                <p>Semi-latus Rectum: {round(output.p, 4)} km</p>
+                <p>Angular momentum: {round(output.h, 4)}</p>
+            </div>
         </div>
     );
 }
